@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>AEGIS Console</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+  <link href="https://unpkg.com/boxicons@2.1.1/css/boxicons.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body class="aegis-body">
+
+<!-- ================= SIDEBAR ================= -->
+<div class="navigation">
+  <ul>
+    <li class="nav-logo">
+      <a href="#top">
+        <span class="icon"><ion-icon name="shield-checkmark-outline"></ion-icon></span>
+        <span class="title">AEGIS</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="#top" class="active">
+        <span class="icon"><ion-icon name="home-outline"></ion-icon></span>
+        <span class="title">Dashboard</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="#env">
+        <span class="icon"><ion-icon name="thermometer-outline"></ion-icon></span>
+        <span class="title">Env</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="#cam">
+        <span class="icon"><ion-icon name="videocam-outline"></ion-icon></span>
+        <span class="title">Camera</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="#charts">
+        <span class="icon"><ion-icon name="stats-chart-outline"></ion-icon></span>
+        <span class="title">Analytics</span>
+      </a>
+    </li>
+
+    <li>
+      <a href="#about">
+        <span class="icon"><ion-icon name="help-outline"></ion-icon></span>
+        <span class="title">About</span>
+      </a>
+    </li>
+  </ul>
+  <div class="toggle"></div>
+</div>
+
+<!-- ================= MAIN ================= -->
+<div class="main-shell" id="top">
+
+<header class="hero">
+  <div class="hero-badge">Prototype</div>
+
+  <div class="hero-logo-wrap">
+    <div class="hero-logo-circle">A</div>
+    <div class="hero-logo-tagline">AEGIS Risk Engine</div>
+  </div>
+
+  <div class="hero-text">
+    <h1>AEGIS</h1>
+    <p>Identity first IoT telemetry, camera monitoring, and AI risk scoring</p>
+  </div>
+</header>
+
+<section class="toolbar">
+  <div class="toolbar-left">
+    <span id="backend_status" class="pill pill-muted">Checking backend</span>
+  </div>
+  <div class="toolbar-right">
+    <button id="btn_pause" class="btn btn-outline">
+      <i class="bx bx-pause-circle"></i>
+      <span>Pause live</span>
+    </button>
+    <button id="btn_reset" class="btn btn-ghost">
+      <i class="bx bx-refresh"></i>
+      <span>Reset charts</span>
+    </button>
+  </div>
+</section>
+
+<!-- ===== STAT CARDS ===== -->
+<section class="card-boxes">
+  <div class="stat-card">
+    <div>
+      <div class="stat-label">Temperature</div>
+      <div class="stat-value" id="stat_temp">--</div>
+    </div>
+    <i class="bx bx-thermometer"></i>
+  </div>
+
+  <div class="stat-card">
+    <div>
+      <div class="stat-label">Brightness</div>
+      <div class="stat-value" id="stat_bright">--</div>
+    </div>
+    <i class="bx bx-sun"></i>
+  </div>
+
+  <div class="stat-card">
+    <div>
+      <div class="stat-label">Node 1</div>
+      <div class="stat-value-small" id="node1_status_label">No data</div>
+    </div>
+    <i class="bx bx-chip"></i>
+  </div>
+
+  <div class="stat-card">
+    <div>
+      <div class="stat-label">Node 2</div>
+      <div class="stat-value-small" id="node2_status_label">No data</div>
+    </div>
+    <i class="bx bx-video-recording"></i>
+  </div>
+
+  <div class="stat-card risk-card">
+    <div>
+      <div class="stat-label">AI risk</div>
+      <div class="stat-value-small" id="stat_risk">No score</div>
+    </div>
+    <i class="bx bx-radar"></i>
+  </div>
+</section>
+
+<!-- ===== MAIN GRID ===== -->
+<section class="main-grid">
+
+<article class="card" id="env">
+  <div class="card-header">
+    <div>
+      <h2>Node 1 - Environment</h2>
+      <p class="card-subtitle">
+        ESP32 sensor node publishing temperature and light levels through the secure AEGIS pipeline.
+      </p>
+    </div>
+    <div class="card-header-right">
+      <span class="pill pill-muted" id="node1_pill">No telemetry</span>
+      <span class="pill pill-muted risk-pill" id="risk_pill">AI risk idle</span>
+    </div>
+  </div>
+
+  <div class="node-info">
+    <div class="row">
+      <span class="label">Temperature</span>
+      <span class="value" id="temp_value">--</span>
+    </div>
+    <div class="row">
+      <span class="label">Brightness</span>
+      <span class="value" id="bright_value">--</span>
+    </div>
+    <div class="row">
+      <span class="label">AI risk score</span>
+      <span class="label" id="node1_risk">--</span>
+    </div>
+    <div class="row">
+      <span class="label">Last update</span>
+      <span class="label" id="node1_ts">--</span>
+    </div>
+  </div>
+</article>
+
+<article class="card" id="cam">
+  <div class="card-header">
+    <div>
+      <h2>Node 2 - Camera</h2>
+      <p class="card-subtitle">
+        MJPEG stream served directly from the ESP32 camera node for local visual telemetry.
+      </p>
+    </div>
+    <span class="pill pill-muted" id="node2_pill">No telemetry</span>
+  </div>
+
+  <div class="row">
+    <span class="label">Status</span>
+    <span class="value" id="cam_status">--</span>
+  </div>
+  <div class="row">
+    <span class="label">Last update</span>
+    <span class="label" id="node2_ts">--</span>
+  </div>
+
+  <div class="camera-wrapper">
+    <img id="cam_stream" src="http://172.20.10.11/video" alt="AEGIS camera stream">
+  </div>
+</article>
+
+</section>
+
+<!-- ===== CHARTS ===== -->
+<section class="charts-grid" id="charts">
+  <article class="card chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Temperature history</div>
+        <div class="chart-subtitle">Recent samples from Node 1</div>
+      </div>
+    </div>
+    <canvas id="temp_chart" height="150"></canvas>
+  </article>
+
+  <article class="card chart-card">
+    <div class="chart-header">
+      <div>
+        <div class="chart-title">Brightness history</div>
+        <div class="chart-subtitle">Bar chart of latest brightness values</div>
+      </div>
+    </div>
+    <canvas id="bright_chart" height="150"></canvas>
+  </article>
+</section>
+
+<!-- ===== ABOUT (EXPANDED, SAME TAGS) ===== -->
+<section class="about-section" id="about">
+<article class="card about-card">
+
+<div class="about-header">
+  <div class="about-logo">
+    <div class="about-logo-inner">AE</div>
+  </div>
+  <div>
+    <h2>About AEGIS</h2>
+    <p class="about-tagline">
+      Adaptive Edge Guardian for Identity and Sensors
+    </p>
+  </div>
+</div>
+
+<p>
+AEGIS is a capstone prototype designed to demonstrate identity-aware IoT telemetry,
+local risk analysis, and secure device monitoring without reliance on opaque cloud analytics.
+</p>
+
+<p>
+Each IoT node is treated as a first-class identity with expected behavioral ranges.
+Telemetry is evaluated continuously, and deviations are surfaced as explainable risk signals.
+</p>
+
+<div class="about-grid">
+  <div>
+    <h3>Pipeline highlights</h3>
+    <ul>
+      <li>Identity-first IoT telemetry model</li>
+      <li>MQTT over TLS via HiveMQ Cloud</li>
+      <li>Local Flask gateway for data normalization</li>
+      <li>Real-time charts and health indicators</li>
+      <li>Rule-based risk scoring for explainability</li>
+    </ul>
+
+    <h3>Risk engine design</h3>
+    <ul>
+      <li>Explicit environmental assumptions</li>
+      <li>Human-readable thresholds</li>
+      <li>No black-box decisions</li>
+      <li>Designed for SOC and audit contexts</li>
+    </ul>
+  </div>
+
+  <div>
+    <h3>Additional notes</h3>
+    <ul>
+      <li>The camera stream never leaves the local network</li>
+      <li>Charts freeze on telemetry loss to preserve context</li>
+      <li>The risk engine can be deployed at the edge</li>
+      <li>Architecture supports future IAM integration</li>
+      <li>Designed for capstone defense and extension</li>
+    </ul>
+  </div>
+</div>
+
+</article>
+</section>
+
+<footer class="footer-note">
+AEGIS prototype console - local only dashboard for capstone demonstration.
+</footer>
+
+</div>
+
+<!-- Icons -->
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+</body>
+</html>
